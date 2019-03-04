@@ -1,0 +1,182 @@
+Math.random
+=======================================
+- Gives us a number from 0 - 1
+- This goes well with Math.floor, which rounds off the number to the floor
+
+document.querySelector
+=======================================
+- A way to select elements in a CSS type of way
+- This only returns the first elements
+
+textContent
+=======================================
+- This allows us to replace text within a elements (setter)
+- Can also be used to only read text and we can store the results (getter)
+- Only text
+- Jquery = text()
+
+innerHTML
+=======================================
+- Allows us to insert HTML into an element and not just text
+- This can be used for text aswell
+
+callback function
+=======================================
+- A function that is not called by us, but by another function
+- A function that is passed into another function as a argument and this function will call that function for us
+
+Anonymous function
+=======================================
+- A function that does not have a name
+- A function that can not be re-used
+
+document.getElementByID
+=======================================
+- This is faster than querySelector
+
+
+a State Variable
+=======================================
+- A State Variable simply tells us the condition of a system
+- We need a state variable when we want to remember something or change something based off a state
+*Example:
+Is our game playing? Is our game not playing
+
+
+Functions Explained
+=======================================
+- A function is an instance of the Object type;
+- and because of that a function behaves like any other object, which means
+  -- We can store a function inside of a variable
+  -- We can pass a function as an argument to another function
+  -- We can return a function from a function
+
+
+Functions inside of a function constructor
+===============================================
+- If you plan on using functions inside of a function constructor
+- Don't
+- Rather add it into the constructors prototype and allow all the instances to inherit it.
+- Because by adding it directly into the constructor, a copy is made of it each time a instance has been created.
+
+
+What is Currying?
+===============================================
+- Currying is bascially a technique where we create a function based off another function, but with some preset parameters
+- Bind is very usefull for this.
+
+
+QuerySelector all
+===============================================
+- This does not return an array, but instead it returns something similar (a list)
+- a list is very similar to an array but it doesn't have all these nice methods that we can use on an array
+- So the solution to this is to convert the list into an array
+EXMAPLE
+
+- we cannot do this as fields is not an array and we connot call an array method on a list
+- fields.slice()
+- The solution is to use the call method and pass the fields into the first parameter making it the this variable and then it should work just fine
+- we add call to the ARRAY.call because slice is in the array prototype
+- The Array inherits all its methods from the Arrays function constructor
+
+Let and Const
+===============================================
+- Variables declared with Let and Const are blocked scoped.
+- Let can be changed
+- Const cannot be changed
+
+Destructuring
+===============================================
+- Destructoring gives us a very convenient way to extra data from a data stuctrure. Like an Object or an array.
+- We can pull out elements out of data structures and store them in variables 
+
+for of loop ES6
+===============================================
+- A combination of a for loop and a foreach loop
+- using this loop allows us to use the continue and break statements
+
+Spread Operator
+===============================================
+- The new spread operator is vary convenient way to expand elements of a array in places like objects and function calls
+- We are able to use it on node lists. A node list is qhat querySelector all returns
+- We can combine information, like 2 arrays into 1 array
+- in short...the spread operator takes an array and transforms it into single values
+- We use this in the function call
+
+Rest parameter
+===============================================
+- Allows us to throw a unknown number of arguments into a function and use these arguements in that function
+- Rest parameters look exactly the same as the spread operator (but they are very different) 
+- in short...the rest parameter recieve a couple of single values and transforms them into an array when we call a function with multiple parameters
+- We can then use that array
+- We use this in the function declaration
+
+Default parameter
+===============================================
+- We use them whenever we want one or more parameters of a function to be preset (so we want them to have a default value)
+
+Classes
+===============================================
+- Classes don't add anything new to the language, they are just a easier way of write prototypal inheritance and creation of objects based off blueprints in in javascript
+- And in ES5, these blueprints are called function constructors
+- All classes have to have the contructor method inside of them
+- Class definitions are not hoisted, so unlike function constructors, we will first need to create the class and only later use it.
+- We can only add methods to classes and not properties (but that aint a problem at all), bcause inheriting properties to the objects intances is not a good practise anyway.
+
+Static Methods
+===============================================
+- Static Methods are methods that simply are attached to the class, but not inherited by the class intances
+- So they are not inherited by the objects created through that class
+
+
+Notes on NPM  
+===============================================
+[npm init] - This creates a package.json file with out initial information
+[npm install] - This installs node packages from around the web
+[npm install {name} --save-dev] - This saves the package as a devdependency
+[npm uninstall {name} --save-dev] - This will uninstall a devdependency
+[npm install {name} --save] - This saves the package as just a dependency
+[npm uninstall {name} --save] - This will uninstall a dependency
+[npm install {name} -g] - This will install a package globally, so that it's available from everywhere
+[npm run {scriptName}] - We can run our scripts like this
+
+
+nodemodules is the folder where all the packages go.
+- We do not need to add this file to the repo or ever share it with someone. All we would need is to share our package.json file with all our package names.
+- Once we do that we can run [npm install] and this will bring back the node modules folder again.
+
+
+How ES6 Modules work
+===============================================
+- We use default when we only want to export one thing from a file [export default {something}]
+- import {something - can be any variable} from './modals/Search' (this is how you import the exported content)
+
+if you want to export multiple things from a single module then we are going to have to use named exports
+EXAMPLE:
+- export const add = (a,b) => a + b; 
+- export const MULTIPLY = (a,b) => a * b; 
+- export const ID = 3; 
+
+if you want to import these from this method it works in a slightly different way (see below)
+- import {add, multiply, ID} from './views/searchView';
+
+if you want to import multiple things but want to use different names, it can be done like this
+- import {add as a, multiply as x, ID as id}
+
+We can also import everything from a module if we need to, it can be done like this
+- import * as searchView from './views/searchView';
+and if we want to use all the imported things we have to use: searchView.add | searchView.multiply | searchView.ID
+
+
+What is the hashchangeEvent?
+===============================================
+- This event is fired off each time that the hash that we have in the URL changes to something elements
+
+EXAMPLE:
+const controlRecipe = () => {
+  //getId from URL
+  const id = window.location.hash;
+  const withoutHash = window.location.replace('#', '');
+}
+
+window.addEventListener('hashchange', controlRecipe);

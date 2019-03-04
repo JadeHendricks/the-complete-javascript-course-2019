@@ -1,0 +1,349 @@
+Parsers and Engines (A quick intro)
+=======================================================================================================
+- After our code has been written
+- it is then parsed to a Paser which takes our code and looks for any syntax errors
+- if all is well, it gets converted into Machine code, so not Javascript anymore
+- then the code runs
+
+
+Execution Context and the Execution Stack
+=======================================================================================================
+- A execution context is like a box, container, wrapper which stores variables where a piece of our code is evaluated and executed
+- The default execution context is the "GLOBAL EXECUTION CONTEXT" this is the global name space object
+
+- We start off with the gloabl execution context on the stack - (all variables that are on the global object)
+* a function calling a function that calls a function
+- when the first function is called - it gets added on top of the exection stack
+- then that function runs and calls the second function which also calls a function 
+- this will result in 3 functions on the execution stack
+
+------------------------FUNCTION 3
+------------------------FUNCTION 2
+------------------------FUNCTION 1
+------------------------GLOBAL EXECUTION CONTEXT
+
+- the third function will then return as it has done it's job and so will all the others aswell
+
+------------------------FUNCTION 3 (REMOVED) 1
+------------------------FUNCTION 2 (REMOVED) 2
+------------------------FUNCTION 1 (REMOVED) 3
+------------------------GLOBAL EXECUTION CONTEXT 
+
+
+Execution Contexts in Detail: Creation and Execution Phases and Hoisting
+=======================================================================================================
+- let's think of the exection object as a object and this object has 3 properties
+#1 - The Variable Object
+   - Function arguments, inner variable decorations function decorations
+#2 - Scope Chain
+   - Current variable objects, all the variable objects of its parents
+#3 - "This" variable
+
+- Let's start with what we already know
+When a function is called a new execution context is put ontop of the execution stack and this happens in 2 phases:
+
+Phase 1:Create Phase
+-- Creation of the Variable Object
+   -- The argument object is created, containing all the arguments that were passed into the function.
+   [
+    -- The Code is scanned for function declarations: for each function, a property is created in the Variable Object, pointing to the function (all the function will be stored inside the VO) even before the code starts executing
+    -- The Code is scanned for variable declarations: for each variable, a property is created in the Varibale Object, and set to undefined
+   ]
+   We commonly call these last 2 points HOISTING
+   HOISTING
+   ========
+   Functions and variables are hoisted in Javascript, which means they are set even before the exection phase starts.
+
+-- Creation of the Scope Chain
+-- The this variable is determined and set
+
+Phase 2: Execution Phase
+-- The code in the function that generated the current execution context is ran line by line
+
+
+Creation of the scoping chain
+=======================================================================================================
+- Scoping answers the question "Where can I access a certain variable"
+- In Javascript each function creates a scope: the space / enviroment, in which the variable it defines are accessible
+- In Javascript we have something called Lexical scope.
+ -- Lexical Scoping just means..."Where something is written in the code", so it's about the positioning
+
+- Lexical Scoping: A function that is lexically within another function gets access to the scope of the outer function.
+
+- But how does this all work behind the scences?
+ -- Remember the execution context object that we've seen before?
+    - In the creation phase each execution context object will get the exact scope chain, which is basically all the varible objects that an execution context has access too
+    - because remember the VO is what stores all the defined variables and functions
+
+Setting the THIS Keyword
+=======================================================================================================
+- The this keyword is a variable that each and every execution context gets and it is stored in the execution object object - as we've seen before
+
+- Where does the THIS variable point?
+  -- In a regular function call: the this keyword points to the global object /  Window Object, think of it as a mthod inside of the global objects
+  -- In a method call: The this variable points to the object that is calling the method
+  -- The this keyword is not asigned a value until a fucntion where it is defined is actually called, 
+     --- because the this variable is attached to the execution context...which is only created once a function is invoked (as discussed before)
+
+How events are processed
+=======================================================================================================
+- The rule is that a event can only be processed or handle as son as the execution stack is empty. Which means that lal the functions have returned
+*EXAMPLE
+
+------------------------FUNCTION 2
+------------------------FUNCTION 1
+------------------------GLOBAL EXECUTION CONTEXT
+
+- So in here we have to execution contexts on the stack. So these have to return first.
+
+- Besides the execution stack, we also have something called the Message Queue in the javascript engine
+- This is where all the events in the browser are put and they sit there waiting to be proccessed, which only happens once the execution stack is empty
+  -- So the next event within the line will now get proccessed (click event for example), we then listen for it with an event listener...which is a function and that gets it's own execution context, which is then put ontop of the stack.
+
+
+Everything in Javascript is an Object
+=======================================================================================================
+- In Javascript we have 2 big types of values (Not everything is an Object).
+  -- Primitives
+     --- Numbers
+     --- Strings
+     --- Booleans
+     --- Undefined
+     --- Null
+  -- Objects
+     --- Arrays
+     --- Functions
+     --- Objects
+     --- Dates
+     --- Wrappers for Numbers, Strings, Booleans
+
+Why use objects?
+- Objects interacting with one another through methods and properties
+- Used to store data, structure applications into modules and keeping code clean.
+
+What is a Constructor
+- Imagine something like a blueprint, from which we can create as many instances(which are also objects) as we want.
+- Like a factory
+
+
+Inheritance and the Prototype Chain
+=======================================================================================================
+- Javascript is a prototype based language, which in short means that inheritance works by something called prototypes
+- This means that each and every Javascript object has a prototype property, which makes inheritance possible in Javascript.
+- The prototype property of an Object is where we put methods and properties that we want other Objects to inheritance
+
+----------------John(Instance of Person)
+-------------------------------------------------
+----------------Person.prototype = calculateAge()
+
+- What's important to note is that the prototype of the person is not the prototype of the person itself, but of all the instances that are created through the person blueprint
+- and that's not even all, because the person object itself is an instance of an even bigger constructor which is the Object OBJECT
+
+FOR EXAMPLE:
+John (instance of Person) ------>   Person (instance of Object) ------>   Object (Object) ----> NULL
+- Each and every object that we ever create is an instance of the object construct which has a bunch of methods in its prototype property.
+- And as you can guess the Person object inherits these methods and can call them. Same with John
+- Null is the only thing without a prototype and is also the final link in the prototype chain.
+
+--this is what's known as the prototype chain
+
+- When we try to access a certain method or property on an Object, Javascript will first try to find that method on that exact Object.
+  If it can't find it, it will look in the Objects prototype(which is the prototype property of it's parent). So it moves up the prototype chain.
+  If the method is still not there, this continues..until there is no more protypes to look at(Which is null)
+
+
+The New Operator (What does it do?)
+=======================================================================================================
+- When we use the new operator, first a brand new empty object is created.
+- Then the constructor function is called with the arguments that we specified.
+- As we know. Calling a function creates a new execution context, which also has a this variable.
+- And we know that in a regular function call. The this variable points to the global object.
+- So what the new operator does is make the "this" variable from the function point to the empty object in the beginning by the new operator
+
+
+Primitives vs Objects
+=======================================================================================================
+- A big difference between primitives and objects, is that variables containing primitives actually hold the data inside the variable itself.
+- On Objects it's very different, variables associated with objects do not acutally contain the object. Instead it maintains a reference in memory to where the object is stored.
+- In short, a variable containing a object does not have a copy of the object inside of it, but it points to the object that is in a different location
+
+
+Object.Create
+=======================================
+- We first define a object that will act as the prototype
+- And then create the new Object based on that very prototype.
+- The difference between Object.create and the function constructor pattern is that the object.create builds an object that inherits directly from the one that we passed in the first argument
+- On the other hand the function constructor, the newly created object inherits from the constructors prototype property
+- One of the biggest benefits of object.create is that it allows us to implement very complex inheritence structures in an easy way than function constructors
+  because it allows us to specify what will be the prototype
+
+IIFE
+=======================================
+- You can only call a IIFE once
+- All we want here is to create a new scope to maintain data privacy 
+
+Closures
+=======================================
+An inner function that always has asccess to the variables and parameters of its outer function, even after the outer function has returned.
+- the new function gets a new execution context that is put ontop of the execution stack
+- that execution context has an object which stores the variables, the scope chain and the this variable
+
+EXAMPLE:
+function retirement(retirementAge) {
+    var a  = 'Years left until retirment.'
+    return function (yearOfBirth) {
+        var age = 2018 - yearOfBirth;
+        console.log(retirementAge - age + a);
+    }
+}
+
+var retirementUS = retirement(66);
+retirementUS(1990);
+
+(SCOPE)
+- Retirement has access to the retirementAge and the A variable
+- and then the function returns and is popped off the execution stack and with it, the varibales and scope chain should be gone too right?
+- No
+- The seceret to closures is even after a function returns the variable Object is still there and not gone, it still sits there in memory and can be accessed.
+- This keeps the scope chain intact
+- Closures are created automatically, we do not need to define them.
+
+
+Call, Apply and Bind
+=======================================
+Call
+- The first  arguemnt of the call method is always to set the this variable
+- Then you can set the rest of the arguments to what you want it to be
+
+Apply
+- The only difference between call and apply is Apply accepts the arguments as an array.
+- 'this', []
+
+Bind
+- This is very similar to the call method as well, it also allows us to set the this variable
+- But bind does not immediately call the function, instead it creates a copy of that function...so that we can store it somewhere.
+- This can be extremely usefull when you want to create a function with preset arguments
+
+
+Event Delegation
+=======================================
+- So in order to talk about event delegation, we first need to talk about something called event bubbling
+- Event bubbling means that when an event is fired/triggered on some DOM element, then the exact same event is also triggered on all of the parent elements one at a time.
+- The element that the click event has been added to, or the element that started the bubbling is kknow as the target element. (this is stored as a property in the event Obj)
+- Which means that all the parent elements will know the target element of the event.
+- So if we know the event is triggered on all the parents and we also know what the target of the event was, then we can attached a eventlistener to a parent and wait for the event to bubble up
+- and this technique is known as event delegation
+
+USE CASES FOR EVENT DELEGATION
+- When we have an elements with lots of children elements that we are interested in.
+- When we want an event handler to be attached to an element that is not in the dom yet, when our page is loaded.
+
+Arrow Functions With Lexical This
+=======================================
+- The biggest advantage of using arrow functions is that they share the surrounding this keyword
+- This means that unlike normal functions, arrow functions don't get their own "this" keyword
+- They simply use the "this" keyword of the function they were written in and so we say that the have a lexical "this" variable
+
+
+Asynchronous Javascript and The Event Loop
+=======================================================================================================
+- The definition of Asynchronous Javascript is, we do not wait for a function to finish it's work before we continue to run our code. (Code that doesn't hold up other code from executing)
+- Instead we let that code do it's work in the background and let the code continue with its execution.
+
+(The event loop)
+
+const second = () => {
+  //this runs in the background and doesn't block code from executing
+  setTimeout(() => {
+    console.log('Async Hey There');
+  }, 2000);
+}
+
+const first = () => {
+  console.log('Hey there');
+  second();
+  console.log('The end');
+}
+
+first();
+
+- There are two functions
+- One gets called and as we know it gets added onto the execution stack
+- The other one is then also called, and that too gets added onto the execution stack (in the second function we have a setTimeout function inside of that)
+- So now we have a setTimeout function that has been popped onto the top of the execution stack
+
+- Where does the setTimeout function come from?
+-- it comes from the WEB APIs
+-- Which actually lives outside of the javascript engine itself
+
+- So stuff like DOM minipulations, setTimeouts, HTTP requests for Ajax, geo location, local storage and loads of other things actually live outside of the javascript engine
+- The reason we have access to them is that they are also inside of the Javascript run time
+- And in the "run time" is exactly where the timer will run for 2 seconds (Asychronously ofcourse, so our code can keep running without being blocked)
+
+- In this example our setTimeout has a callback function attached to it
+-- So lets say that our setTimout timer has ended and so the timer dissapears, but what happends to our callback function now?
+-- The callback function is simply moved to the message queue where it waits to be executed as soon as the execution stack is empty
+-- and this is exactly what happens with DOM events aswell
+
+- So now the job of the event loop is to constantly monitor the message queue and the execution stack and to push the first callback function inline onto the execution stack. As soon as the stack is empty
+- So when the event loop adds the callback function onto the execution stack, a new execution context is created for that function
+- Now if there were more callbacks waiting in the message queue, the event loop will again look at the execution stack to see if it is empty and then again keep adding it onto the stack to be executed until there are no more callbacks inside of the mssage queue
+- And that's it. That's what the event loop does.
+
+
+Promises
+=======================================
+- In small terms, it's a object that keeps track about whether a certain event has happened already or not
+- And if it did happen...then the promise determines what happens after the event has happened (when we speakl about events we are speaking about, a async event like...a timer finishing or data coming back from a Ajax call)
+- It implements the concept of a future value that we're expecting, it's like us saying "Hey get me some data from the server in the background" and the then the promise, promises us to get that data so we can handle it in the future
+
+-- Promise States
+- So when we deal with time sensitive code now, a promise can have different states
+
+#1 - Before an event has happened (Pending state)
+#2 - After an event has happened (Settled / Resolved state)
+
+#3 if (promise === success) {
+  promiseFulfilled();
+} else {
+  promiseRejected();
+}
+
+- in more practical terms we can produce and consume promises
+
+- So when we produce a promise
+-- We create a new promise
+-- And send a result using that promise
+
+- So when we consume a promise
+-- We can use call back functions for fulfillment or rejection of our promises
+
+
+Async Await
+===============================================
+- Async await was designed for use to consume promises and not to produce them
+- So if you want to produce promises we just do it the promises way (see folder - From Callback Hell to Promises)
+
+
+What are AJAX
+===============================================
+- AJAX (Asynchronous Javascript and XML) and basically it allows us to asynchronously communicate with remote servers
+- Let's say we have our javascript app running in browser
+- And we want our app to get some data from our server, but ofcourse without having to reload the entire page
+
+-- With AJAX we can simply to a get HTTP request to our server which will then send back a response containing the data that we have requested
+-- And this all happens asynchronously in the background just as we have learned before
+-- This just not just work for getting data from a server but also sending data to a server by doing a (POST) request rather than a (GET)
+
+
+What are APIs
+===============================================
+- API (Application Programming Interface)
+- And on a very high level it's basically a piece of software that can be used by another piece of software in order to basically allow applications to talk to each other
+- And that's not just valid for web development and Javascript, but for programming in general
+
+-- The API is not the server itself, but it's like a part of the server, like a application that recieves requests and sends back responses
+-- 2 types of APIs you can use 
+
+#1 - Your own API, for data coming from your own server
+#2 - 3rd party APIs: (GoogleMaps, Embed YouTube videos, Weather data, movies data, send email or sms, etcetcetc)
